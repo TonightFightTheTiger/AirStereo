@@ -15,6 +15,7 @@ AirStereo captures the system mix from the default output device for music, vide
 | Two independent speakers | First selection is L, second is R, sharing an audio timeline and PTP clock; either device disconnecting stops the group |
 | Native Apple stereo pair | A confirmed pair appears as one logical target; the receivers assign physical channels |
 | Manual / live volume | Drag then click ✓ to apply, or enable live volume to apply while dragging |
+| System volume sync | While the app is running with a receiver selected, Windows default output volume changes are sent to the selected AirPlay receiver |
 | Ten-band equalizer | Vertical peaking EQ integrated into Settings, presets including Pop and Bass, bypass and L/R balance |
 | Encoding and sample rate | Lossless ALAC or uncompressed PCM, 44.1 / 48 kHz; ALAC, 16-bit/44.1 kHz by default |
 | Latency settings | Preset or custom buffering; latency, encoding and sample rate are locked during a connection |
@@ -48,7 +49,7 @@ Requires Windows 10 22H2 (build 19045) or later on x64, including Windows 11. Pa
 1. Connect the PC and speakers to the same LAN and permit local discovery and traffic.
 2. Launch AirStereo and click its taskbar tray icon. Wait for discovery or refresh.
 3. Select one speaker or a native pair. For independent stereo, select L first and R second. Playback is disabled with no selection; at most two independent speakers are supported.
-4. Click Play PC audio, then play content on the PC. Drag volume and click ✓, or enable live adjustment.
+4. Click Play PC audio, then play content on the PC. Drag volume and click ✓, or enable live adjustment. With a receiver selected, you can also change its volume using Windows system volume controls while the app is running.
 5. Use Settings for language, appearance, startup, reconnection and EQ. Stop the connection before changing encoding, sample rate or latency.
 
 ALAC and PCM preserve the same samples at the same sample rate and bit depth. ALAC usually uses less bandwidth, with the ratio depending on content; PCM uses more bandwidth and remains available as a fallback. Support for 48 kHz depends on receiver negotiation; use the default 44.1 kHz first if connections are unstable. The buffering setting is not a measurement of end-to-end latency.

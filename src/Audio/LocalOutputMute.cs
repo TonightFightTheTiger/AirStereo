@@ -9,6 +9,7 @@ namespace AirStereo.Audio
     {
         string Id { get; }
         bool Muted { get; set; }
+        float VolumeScalar { get; }
     }
     internal interface IOutputMuteBackend
     {
@@ -185,6 +186,10 @@ namespace AirStereo.Audio
             {
                 get { Marshal.ThrowExceptionForHR(volume.GetMute(out bool muted)); return muted; }
                 set { Guid context = Guid.Empty; Marshal.ThrowExceptionForHR(volume.SetMute(value, ref context)); }
+            }
+            public float VolumeScalar
+            {
+                get { Marshal.ThrowExceptionForHR(volume.GetMasterVolumeLevelScalar(out float level)); return level; }
             }
             public void Dispose() { AudioInterop.Release(volume); volume = null; }
         }

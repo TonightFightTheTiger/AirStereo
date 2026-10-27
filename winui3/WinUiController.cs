@@ -385,6 +385,21 @@ internal sealed class WinUiController : IDisposable
         });
     }
 
+    internal void SyncSystemVolumeToSpeakers()
+    {
+        if (disposed || volumeBusy || !HasSelection) return;
+        try
+        {
+            using IOutputMuteEndpoint endpoint = new WindowsOutputMuteBackend().OpenDefault();
+            int value = Math.Clamp((int)Math.Round(endpoint.VolumeScalar * 100), 0, 100);
+            if (value == Volume) return;
+            Volume = value;
+            SaveSettings();
+            ApplyVolume();
+        }
+        catch (Exception error) { Log("读取 Windows 系统音量失败：" + error.Message); }
+    }
+
     internal void StartPlayback(string kind)
     {
         if (disposed || Scanning) return;

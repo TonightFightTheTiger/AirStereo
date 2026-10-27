@@ -47,6 +47,7 @@ namespace AirStereo.Ui
             internal Action BeforeSet;
             internal int Sets;
             public bool Muted { get => Value; set { if (FailSet) throw new IOException("fake set failure"); BeforeSet?.Invoke(); if (!IgnoreSet) Value = value; Sets++; } }
+            public float VolumeScalar { get; set; }
             public void Dispose() { }
         }
         private sealed class FakeBackend : IOutputMuteBackend

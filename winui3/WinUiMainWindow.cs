@@ -27,6 +27,7 @@ internal sealed class WinUiMainWindow : Window
     private TextBlock volumeValue => view.VolumeText;
     private DispatcherQueueTimer dismiss = null!;
     private DispatcherQueueTimer localMuteTimer = null!;
+    private DispatcherQueueTimer systemVolumeTimer = null!;
     private nint hwnd;
     private bool rebuilding;
     private bool closing;
@@ -109,6 +110,11 @@ internal sealed class WinUiMainWindow : Window
             }
         };
         localMuteTimer.Start();
+        systemVolumeTimer = dispatcher.CreateTimer();
+        systemVolumeTimer.Interval = TimeSpan.FromMilliseconds(250);
+        systemVolumeTimer.IsRepeating = true;
+        systemVolumeTimer.Tick += (_, _) => { if (!closing) controller.SyncSystemVolumeToSpeakers(); };
+        systemVolumeTimer.Start();
         Activated += (_, args) =>
         {
             if (args.WindowActivationState == WindowActivationState.Deactivated && settings == null && tray?.MenuOpen != true)
@@ -615,6 +621,7 @@ internal sealed class WinUiMainWindow : Window
         WinUiSettingsWindow? openSettings = settings;
         settings = null;
         try { openSettings?.Close(); } catch { }
+        systemVolumeTimer.Stop();
         controller.Dispose();
         tray?.Dispose();
         Close();
