@@ -13,7 +13,7 @@ AirStereo 是 Windows 桌面 AirPlay 发送器，从系统默认输出采集声�
 | Windows 输出端点控制 | `src/Audio/LocalOutputMute.cs` |
 | AirPlay 发现、协议与会话 | `src/ReceiverCatalog.cs`、`src/Api.cs`、`src/Session/` |
 | 构建、验收、发布 | `docs/BUILD.md`、`docs/TESTING.md`、`docs/README.release.md` |
-| GitHub 云端 EXE 安装包 | `.github/workflows/windows-installer.yml` |
+| GitHub 云端 MSI 安装包 | `.github/workflows/windows-installer.yml` |
 | 版本记录 | `CHANGELOG.md`、`docs/releases/` |
 
 ## 项目约定
@@ -27,5 +27,5 @@ AirStereo 是 Windows 桌面 AirPlay 发送器，从系统默认输出采集声�
 ## 当前工作备注
 
 - 增加应用运行期间 Windows 默认输出音量到当前所选 AirPlay 音响的同步，轮询间隔 250 ms；系统音量百分比映射到 AirPlay 目标音量百分比。
-- Windows Actions workflow 构建应用并打包 `AirStereo-Setup.exe` 作为短期 artifact，不自动创建 Release。
+- Windows Actions workflow 构建应用并打包版本化 MSI 与 SHA-256 作为短期 artifact，不自动创建 Release。
 - 依赖 Windows Core Audio `IAudioEndpointVolume` 读取端点标量音量；需要在 Windows 上用 HomePod mini 实机验证响应、默认输出设备切换及本机静音选项的组合行为。

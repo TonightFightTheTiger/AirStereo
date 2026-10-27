@@ -51,6 +51,6 @@
 
 离线自检、实际安装、真实音响播放和 WACK 是不同验证层，记录结果时分别说明。
 
-## GitHub 云端 EXE 安装包
+## GitHub 云端 MSI 安装包
 
-`.github/workflows/windows-installer.yml` 在 `main` 有新提交或手动触发时，使用 Windows runner 构建应用和 `AirStereo-Setup.exe`，并上传 EXE、SHA-256 与打包信息为保留 14 天的 Actions artifact。它不创建 GitHub Release。安装器打包脚本通过 `-DotNetRoot` 使用 runner 安装的 .NET 运行时目录。
+`.github/workflows/windows-installer.yml` 在 `main` 有新提交或手动触发时，使用 Windows runner 构建应用和 `AirStereo-<版本>-x64.msi`，并上传 MSI 与 SHA-256 为保留 14 天的 Actions artifact。它不创建 GitHub Release。构建运行使用 WiX 4.0.6 与仓库现有的 payload/MSI 打包脚本。

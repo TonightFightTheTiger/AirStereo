@@ -3,7 +3,6 @@ param(
     [Parameter(Mandatory = $true)][string]$BuildDirectory,
     [Parameter(Mandatory = $true)][string]$OutputDirectory,
     [Parameter(Mandatory = $true)][string]$BuildId,
-    [string]$DotNetRoot = (Join-Path $env:ProgramFiles 'dotnet'),
     [string]$BaseInstaller = 'installer\template\AirStereo-Setup-base.exe'
 )
 $ErrorActionPreference = 'Stop'
@@ -36,7 +35,7 @@ foreach ($name in $programFiles) {
     Copy-Item -LiteralPath $file -Destination (Join-Path $payload $name)
 }
 $config = Get-Content -LiteralPath (Join-Path $build 'AirStereo.runtimeconfig.json') -Raw | ConvertFrom-Json
-$dotnet = [IO.Path]::GetFullPath($DotNetRoot)
+$dotnet = Join-Path $env:ProgramFiles 'dotnet'
 $core = $config.runtimeOptions.frameworks | Where-Object name -eq 'Microsoft.NETCore.App'
 $desktop = $config.runtimeOptions.frameworks | Where-Object name -eq 'Microsoft.WindowsDesktop.App'
 if ($null -eq $core -or $null -eq $desktop) { throw 'Both Core and Desktop runtimes must be declared.' }
