@@ -50,3 +50,7 @@
 参见 [MSIX.md](MSIX.md)。使用新的输出目录，避免覆盖既有构建。MSIX 仅用于商店提交和本地留存，不作为后续 GitHub Release 资产。源码 ZIP 应从发布提交导出，不含 `.git`、输出目录、运行时配置、日志或签名材料。本版不制作 EXE 安装器。
 
 离线自检、实际安装、真实音响播放和 WACK 是不同验证层，记录结果时分别说明。
+
+## GitHub 云端 EXE 安装包
+
+`.github/workflows/windows-installer.yml` 在 `main` 有新提交或手动触发时，使用 Windows runner 构建应用和 `AirStereo-Setup.exe`，并上传 EXE、SHA-256 与打包信息为保留 14 天的 Actions artifact。它不创建 GitHub Release。安装器打包脚本通过 `-DotNetRoot` 使用 runner 安装的 .NET 运行时目录。

@@ -1,0 +1,49 @@
+name: Windows EXE installer
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Build AirStereo
+        shell: pwsh
+        run: ./build.ps1
+      - name: Prepare Mono.Cecil for installer packaging
+        shell: pwsh
+        run: |
+          $cecil = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\18\BuildTools\Common7\IDE\Extensions\TestPlatform\Extensions\Mono.Cecil.dll'
+          if (-not (Test-Path -LiteralPath $cecil)) {
+            $package = Join-Path $env:RUNNER_TEMP 'mono.cecil.0.11.5.nupkg'
+            $expanded = Join-Path $env:RUNNER_TEMP 'mono.cecil.0.11.5'
+            Invoke-WebRequest 'https://api.nuget.org/v3-flatcontainer/mono.cecil/0.11.5/mono.cecil.0.11.5.nupkg' -OutFile $package
+            Expand-Archive -LiteralPath $package -DestinationPath $expanded
+            $source = Get-ChildItem $expanded -Filter Mono.Cecil.dll -Recurse | Where-Object FullName -Match 'netstandard2.0' | Select-Object -First 1
+            if ($null -eq $source) { throw 'Mono.Cecil assembly was not found in the NuGet package.' }
+            New-Item -ItemType Directory -Path (Split-Path -Parent $cecil) -Force | Out-Null
+            Copy-Item -LiteralPath $source.FullName -Destination $cecil
+          }
+      - name: Package installer
+        shell: pwsh
+        run: |
+          $versionSource = Get-Content src/VersionInfo.cs -Raw
+          $version = [regex]::Match($versionSource, 'AssemblyInformationalVersion\("([^"]+)"\)').Groups[1].Value
+          if (-not $version) { throw 'Could not read the application version.' }
+          ./installer/package-release.ps1 -BuildDirectory dist -OutputDirectory "artifacts/$version" -BuildId $version -DotNetRoot $env:DOTNET_ROOT
+          "BUILD_VERSION=$version" >> $env:GITHUB_ENV
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AirStereo-Setup-${{ env.BUILD_VERSION }}-${{ github.sha }}
+          path: artifacts/${{ env.BUILD_VERSION }}/*
+          if-no-files-found: error
+          retention-days: 14
